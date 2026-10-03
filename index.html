@@ -4,52 +4,42 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RetroVault | Legal Instant Play Arcade Hub</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
-
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   />
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rajdhani:wght@500;600;700&display=swap"
     rel="stylesheet"
   >
-
   <style>
     .font-pixel {
       font-family: 'Press Start 2P', monospace;
     }
-
     .font-sans-tech {
       font-family: 'Rajdhani', sans-serif;
     }
-
     .glow-pink {
       text-shadow:
         0 0 10px rgba(244, 114, 182, 0.7),
         0 0 20px rgba(244, 114, 182, 0.4);
     }
-
     .glow-cyan {
       text-shadow:
         0 0 10px rgba(34, 211, 238, 0.7),
         0 0 20px rgba(34, 211, 238, 0.4);
     }
-
     .border-glow {
       box-shadow: 0 0 20px rgba(168, 85, 247, 0.35);
     }
-
     .card-glow:hover {
       box-shadow:
         0 0 25px rgba(34, 211, 238, 0.45),
         0 0 10px rgba(244, 114, 182, 0.35);
     }
-
     .crt-overlay::before {
       content: " ";
       display: block;
@@ -74,31 +64,25 @@
       pointer-events: none;
       opacity: 0.4;
     }
-
     ::-webkit-scrollbar {
       width: 8px;
       height: 8px;
     }
-
     ::-webkit-scrollbar-track {
       background: #090d16;
     }
-
     ::-webkit-scrollbar-thumb {
       background: #8b5cf6;
       border-radius: 4px;
     }
-
     ::-webkit-scrollbar-thumb:hover {
       background: #a855f7;
     }
   </style>
 </head>
-
 <body
   class="h-full flex flex-col font-sans-tech overflow-x-hidden crt-overlay bg-slate-950 text-slate-100 selection:bg-pink-500 selection:text-white"
 >
-
   <!-- HEADER -->
   <header
     class="border-b border-purple-800/40 bg-slate-900/90 backdrop-blur-md sticky top-0 z-30 shadow-xl"
@@ -106,7 +90,6 @@
     <div
       class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between"
     >
-
       <div
         class="flex items-center space-x-3 cursor-pointer group"
         onclick="switchTab('all')"
@@ -116,14 +99,12 @@
         >
           <i class="fa-solid fa-gamepad"></i>
         </div>
-
         <div>
           <h1
             class="font-pixel text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-300 to-cyan-400 glow-pink"
           >
             RETRO<span class="text-cyan-400">VAULT</span>
           </h1>
-
           <p
             class="text-[11px] text-purple-300 tracking-widest uppercase font-mono"
           >
@@ -131,47 +112,35 @@
           </p>
         </div>
       </div>
-
       <div></div>
-
     </div>
   </header>
-
-
   <main
     class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col space-y-8"
   >
-
     <!-- GAME PLAYER -->
     <div
       id="gameScreen"
       class="hidden flex-col bg-slate-900 border-2 border-purple-500/60 rounded-2xl overflow-hidden shadow-2xl relative border-glow"
     >
-
       <div
         class="bg-slate-950 px-5 py-3.5 flex items-center justify-between border-b border-purple-900/50"
       >
-
         <div class="flex items-center space-x-3 truncate pr-2">
-
           <span
             id="activeGameBadge"
             class="px-2.5 py-1 text-[10px] font-pixel rounded bg-purple-950 text-cyan-300 border border-cyan-500/40 uppercase"
           >
             SNES
           </span>
-
           <h3
             id="activeGameTitle"
             class="font-bold text-sm sm:text-lg text-white font-pixel truncate"
           >
             Super Mario All-Stars
           </h3>
-
         </div>
-
         <div class="flex items-center space-x-2 shrink-0">
-
           <button
             onclick="toggleFullscreen()"
             class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-200 text-xs font-bold transition flex items-center gap-1.5 border border-slate-700"
@@ -179,7 +148,6 @@
             <i class="fa-solid fa-expand text-cyan-400"></i>
             <span class="hidden sm:inline">Fullscreen</span>
           </button>
-
           <button
             onclick="closeGame()"
             class="px-3 py-1.5 bg-pink-900/60 hover:bg-pink-800 text-pink-200 rounded-lg text-xs font-bold transition flex items-center gap-1.5 border border-pink-500/30"
@@ -187,87 +155,63 @@
             <i class="fa-solid fa-xmark"></i>
             <span>Close</span>
           </button>
-
         </div>
       </div>
-
-
       <div
         class="relative w-full aspect-video bg-black flex flex-col items-center justify-center overflow-hidden"
         id="iframeContainer"
       >
-
         <div
           id="emulatorMount"
           class="w-full h-full hidden"
         ></div>
-
         <iframe
           id="gameIframe"
           class="w-full h-full border-0 hidden"
           allow="autoplay; gamepad; fullscreen; clipboard-read; clipboard-write"
           referrerpolicy="no-referrer"
         ></iframe>
-
       </div>
-
-
       <div
         class="p-3.5 bg-slate-950 border-t border-slate-800 text-xs text-slate-400 flex flex-wrap items-center justify-between gap-2 font-mono"
       >
-
         <div class="flex items-center space-x-2">
           <i class="fa-solid fa-keyboard text-pink-400 text-sm"></i>
           <span>
             Click a game below to play instantly in your browser.
           </span>
         </div>
-
         <span class="text-cyan-400 font-bold">
           Instant Browser Play
         </span>
-
       </div>
-
     </div>
-
-
     <!-- HERO -->
     <div
       class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-950/70 via-slate-900 to-cyan-950/70 border border-purple-500/30 p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border-glow"
     >
-
       <div class="space-y-3 text-center md:text-left z-10">
-
         <span
           class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/20 border border-emerald-500/40 rounded-full text-emerald-300 text-xs font-pixel tracking-wider uppercase"
         >
           <i class="fa-solid fa-bolt text-emerald-400"></i>
           Instant Browser Arcade
         </span>
-
         <h2
           class="text-2xl sm:text-3xl font-bold tracking-wide text-white font-sans-tech"
         >
           Pick a game and start playing.
         </h2>
-
         <p class="text-slate-300 max-w-xl text-sm leading-relaxed">
           No setup screens — just choose a browser-playable game and start playing.
         </p>
-
       </div>
-
     </div>
-
-
     <!-- FILTERS -->
     <div
       class="flex flex-col sm:flex-row items-center justify-between gap-4"
     >
-
       <div class="flex flex-wrap items-center justify-center gap-2">
-
         <button
           id="tab-all"
           onclick="switchTab('all')"
@@ -276,7 +220,6 @@
           <i class="fa-solid fa-layer-group"></i>
           <span>All Games</span>
         </button>
-
         <button
           id="tab-1980s"
           onclick="switchTab('1980s')"
@@ -285,7 +228,6 @@
           <i class="fa-solid fa-record-vinyl"></i>
           <span>1980s</span>
         </button>
-
         <button
           id="tab-1990s"
           onclick="switchTab('1990s')"
@@ -294,7 +236,6 @@
           <i class="fa-solid fa-gamepad"></i>
           <span>1990s</span>
         </button>
-
         <button
           id="tab-2000s"
           onclick="switchTab('2000s')"
@@ -303,16 +244,11 @@
           <i class="fa-solid fa-compact-disc"></i>
           <span>2000s</span>
         </button>
-
       </div>
-
-
       <div class="relative w-full sm:w-72">
-
         <i
           class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"
         ></i>
-
         <input
           id="searchInput"
           oninput="filterGames()"
@@ -320,63 +256,42 @@
           placeholder="Search Mario, DOOM, Sonic..."
           class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition shadow-inner"
         />
-
       </div>
-
     </div>
-
-
     <!-- GAMES TITLE -->
     <div class="flex items-center justify-between pt-2">
-
       <div class="flex items-center space-x-3">
-
         <div
           class="w-3 h-8 bg-gradient-to-b from-pink-500 to-cyan-400 rounded-full"
         ></div>
-
         <h2
           class="text-2xl sm:text-3xl font-pixel text-white glow-pink tracking-wider"
         >
           Games
         </h2>
-
       </div>
-
       <span
         id="gameCountBadge"
         class="text-xs font-mono bg-purple-950/80 text-cyan-300 border border-purple-500/30 px-3 py-1 rounded-full"
       >
         Showing All Titles
       </span>
-
     </div>
-
-
     <!-- GAME GRID -->
     <div
       id="gamesGrid"
       class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"
     ></div>
-
   </main>
-
-
   <script>
-
     /*
       RetroVault game catalog.
-
       Gothicvania is the test game.
       It is stored at the ROOT of the GitHub Pages repository:
-
           /RetroVault/gothicvania.sfc
-
       The URL is generated automatically from the current GitHub Pages page.
     */
-
     const GAMES_DATA = [
-
       {
         id: 'gothicvania',
         title: 'Gothicvania',
@@ -384,24 +299,18 @@
         era: '1990s',
         type: 'emulator',
         core: 'snes',
-
         /*
           IMPORTANT:
           This is intentionally relative to index.html.
           GitHub Pages will resolve it to:
-
           https://dominicanloco.github.io/RetroVault/gothicvania.sfc
         */
         gameUrl: './gothicvania.sfc',
-
         image:
           'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 600 450%22%3E%3Crect width=%22600%22 height=%22450%22 fill=%22%230b1020%22/%3E%3Ctext x=%22300%22 y=%22195%22 text-anchor=%22middle%22 fill=%22%2367e8f9%22 font-size=%2242%22 font-family=%22monospace%22%3EGOTHICVANIA%3C/text%3E%3Ctext x=%22300%22 y=%22245%22 text-anchor=%22middle%22 fill=%22%23f9a8d4%22 font-size=%2222%22 font-family=%22monospace%22%3ESNES HOMEBREW%3C/text%3E%3C/svg%3E',
-
         badgeColor:
           'bg-purple-950 text-purple-300 border-purple-500/40'
       },
-
-
       {
         id: 'super-mario-all-stars',
         title: 'Super Mario All-Stars',
@@ -409,14 +318,12 @@
         era: '1990s',
         type: 'emulator',
         core: 'snes',
-        gameUrl: '/games/super-mario-all-stars.sfc',
+        gameUrl: './super-mario-all-stars.sfc',
         image:
           'https://commons.wikimedia.org/wiki/Special:FilePath/Super_Mario_All-Stars_SNES_cover.jpg',
         badgeColor:
           'bg-red-950 text-red-300 border-red-500/40'
       },
-
-
       {
         id: 'super-mario-world',
         title: 'Super Mario World',
@@ -430,8 +337,6 @@
         badgeColor:
           'bg-red-950 text-red-300 border-red-500/40'
       },
-
-
       {
         id: 'doom-1993',
         title: 'DOOM (1993 DOS)',
@@ -445,8 +350,6 @@
         badgeColor:
           'bg-amber-950 text-amber-300 border-amber-500/40'
       },
-
-
       {
         id: 'street-fighter-2',
         title: 'Street Fighter II',
@@ -460,8 +363,6 @@
         badgeColor:
           'bg-purple-950 text-purple-300 border-purple-500/40'
       },
-
-
       {
         id: 'pacman-arcade',
         title: 'Pac-Man Arcade',
@@ -475,8 +376,6 @@
         badgeColor:
           'bg-yellow-950 text-yellow-300 border-yellow-500/40'
       },
-
-
       {
         id: 'tetris-classic',
         title: 'Tetris 1989',
@@ -490,8 +389,6 @@
         badgeColor:
           'bg-cyan-950 text-cyan-300 border-cyan-500/40'
       },
-
-
       {
         id: 'sonic-genesis',
         title: 'Sonic The Hedgehog',
@@ -505,8 +402,6 @@
         badgeColor:
           'bg-blue-950 text-blue-300 border-blue-500/40'
       },
-
-
       {
         id: 'mario-kart-gba',
         title: 'Mario Kart Super Circuit',
@@ -520,47 +415,30 @@
         badgeColor:
           'bg-pink-950 text-pink-300 border-pink-500/40'
       }
-
     ];
-
-
     let currentEra = 'all';
     let currentActiveGame = null;
     let emulatorScript = null;
-
     const EMULATOR_DATA =
       'https://cdn.emulatorjs.org/stable/data/';
-
-
     function stopGame() {
-
       const iframe =
         document.getElementById('gameIframe');
-
       const mount =
         document.getElementById('emulatorMount');
-
-
       if (iframe) {
         iframe.src = 'about:blank';
         iframe.classList.add('hidden');
       }
-
-
       if (mount) {
         mount.innerHTML = '';
         mount.classList.add('hidden');
       }
-
-
       if (emulatorScript) {
         emulatorScript.remove();
         emulatorScript = null;
       }
-
-
       try {
-
         delete window.EJS_player;
         delete window.EJS_gameUrl;
         delete window.EJS_core;
@@ -569,414 +447,247 @@
         delete window.EJS_gameName;
         delete window.EJS_threads;
         delete window.EJS_DEBUG_XX;
-
       } catch (_) {}
-
     }
-
-
     window.addEventListener(
       'load',
       renderGames
     );
-
-
     function renderGames() {
-
       const grid =
         document.getElementById('gamesGrid');
-
       grid.innerHTML = '';
-
-
       const searchTerm =
         document
           .getElementById('searchInput')
           .value
           .toLowerCase();
-
-
       const filtered =
         GAMES_DATA.filter(game => {
-
           const matchesEra =
             currentEra === 'all' ||
             game.era === currentEra;
-
           const matchesSearch =
             game.title
               .toLowerCase()
               .includes(searchTerm) ||
-
             game.system
               .toLowerCase()
               .includes(searchTerm);
-
           return matchesEra && matchesSearch;
-
         });
-
-
       document
         .getElementById('gameCountBadge')
         .innerText =
           `Showing ${filtered.length} Game${
             filtered.length === 1 ? '' : 's'
           }`;
-
-
       if (filtered.length === 0) {
-
         grid.innerHTML = `
           <div class="col-span-full text-center py-16 text-slate-500 font-pixel text-sm space-y-3">
             <i class="fa-solid fa-ghost text-4xl text-purple-400"></i>
             <p>No retro games found.</p>
           </div>
         `;
-
         return;
       }
-
-
       filtered.forEach(game => {
-
         const card =
           document.createElement('div');
-
-
         card.className =
           'group relative bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-400 card-glow flex flex-col justify-between';
-
-
         card.onclick =
           () => launchGame(game.id);
-
-
         card.innerHTML = `
-
           <div
             class="relative w-full aspect-[4/3] overflow-hidden bg-slate-950"
           >
-
             <img
               src="${game.image}"
               alt="${game.title} cover art"
-
               onerror="
                 this.onerror=null;
                 this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 600 450%22%3E%3Crect width=%22600%22 height=%22450%22 fill=%22%23111827%22/%3E%3Ctext x=%22300%22 y=%22220%22 text-anchor=%22middle%22 fill=%22%2367e8f9%22 font-size=%2230%22 font-family=%22monospace%22%3ERETROVAULT%3C/text%3E%3Ctext x=%22300%22 y=%22270%22 text-anchor=%22middle%22 fill=%22%23f9a8d4%22 font-size=%2220%22 font-family=%22monospace%22%3EGAME ART%3C/text%3E%3C/svg%3E'
               "
-
               class="w-full h-full object-cover group-hover:scale-110 transition duration-500 brightness-90 group-hover:brightness-100"
             />
-
-
             <div
               class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center backdrop-blur-[2px]"
             >
-
               <div
                 class="w-12 h-12 rounded-full bg-gradient-to-tr from-pink-500 to-cyan-400 flex items-center justify-center text-slate-950 shadow-xl transform scale-75 group-hover:scale-100 transition duration-300"
               >
                 <i class="fa-solid fa-play text-lg ml-0.5"></i>
               </div>
-
             </div>
-
-
             <div
               class="absolute top-2.5 left-2.5 flex items-center space-x-1"
             >
-
               <span
                 class="px-2 py-0.5 text-[10px] font-pixel rounded-md bg-slate-950/90 ${game.badgeColor} border shadow"
               >
                 ${game.system}
               </span>
-
             </div>
-
-
             <div
               class="absolute bottom-2.5 right-2.5 px-2 py-0.5 text-[9px] font-mono rounded bg-emerald-950/90 text-emerald-300 border border-emerald-500/40"
             >
               <i class="fa-solid fa-bolt mr-1"></i>
               ${game.type === 'emulator' ? 'Emulator' : 'Instant'}
             </div>
-
           </div>
-
-
           <div
             class="p-3.5 bg-slate-900/90 flex items-center justify-between border-t border-slate-800/80"
           >
-
             <h3
               class="font-bold text-slate-100 text-xs sm:text-sm group-hover:text-cyan-300 transition truncate pr-2"
             >
               ${game.title}
             </h3>
-
             <i
               class="fa-solid fa-circle-play text-slate-500 group-hover:text-pink-400 transition text-base"
             ></i>
-
           </div>
         `;
-
-
         grid.appendChild(card);
-
       });
-
     }
-
-
     function switchTab(era) {
-
       currentEra = era;
-
-
       document
         .querySelectorAll('.tab-btn')
         .forEach(btn => {
-
           btn.classList.remove(
             'bg-purple-600',
             'text-white',
             'shadow-lg'
           );
-
           btn.classList.add(
             'bg-slate-800/80',
             'text-slate-300'
           );
-
         });
-
-
       const activeBtn =
         document.getElementById(`tab-${era}`);
-
-
       if (activeBtn) {
-
         activeBtn.classList.remove(
           'bg-slate-800/80',
           'text-slate-300'
         );
-
         activeBtn.classList.add(
           'bg-purple-600',
           'text-white',
           'shadow-lg'
         );
-
       }
-
-
       renderGames();
-
     }
-
-
     function filterGames() {
       renderGames();
     }
-
-
     function launchGame(gameId) {
-
       const game =
         GAMES_DATA.find(
           g => g.id === gameId
         );
-
-
       if (!game) return;
-
-
       currentActiveGame = game;
-
-
       document
         .getElementById('activeGameTitle')
         .innerText = game.title;
-
-
       document
         .getElementById('activeGameBadge')
         .innerText = game.system;
-
-
       stopGame();
-
-
       const iframe =
         document.getElementById('gameIframe');
-
-
       const mount =
         document.getElementById('emulatorMount');
-
-
       if (game.type === 'instant') {
-
         iframe.classList.remove('hidden');
-
         iframe.src = game.url;
-
       }
-
       else {
-
         mount.classList.remove('hidden');
-
-
         /*
           EmulatorJS configuration
         */
-
         window.EJS_player =
           '#emulatorMount';
-
-
         window.EJS_gameName =
           game.title;
-
-
         /*
           THIS IS THE IMPORTANT PART.
-
           The ROM URL is resolved relative to the
           GitHub Pages project URL.
-
           Example:
-
           https://dominicanloco.github.io/RetroVault/
           +
           gothicvania.sfc
-
           becomes:
-
           https://dominicanloco.github.io/RetroVault/gothicvania.sfc
         */
-
         window.EJS_gameUrl =
           new URL(
             game.gameUrl,
             window.location.href
           ).href;
-
-
         window.EJS_core =
           game.core;
-
-
         window.EJS_pathtodata =
           EMULATOR_DATA;
-
-
         window.EJS_startOnLoaded =
           true;
-
-
         window.EJS_threads =
           false;
-
-
         window.EJS_DEBUG_XX =
           false;
-
-
         console.log(
           'RetroVault EmulatorJS ROM:',
           window.EJS_gameUrl
         );
-
-
         /*
           Load EmulatorJS.
         */
-
         emulatorScript =
           document.createElement('script');
-
-
         emulatorScript.src =
           EMULATOR_DATA + 'loader.js';
-
-
         emulatorScript.async = true;
-
-
         document.body.appendChild(
           emulatorScript
         );
-
       }
-
-
       const screen =
         document.getElementById('gameScreen');
-
-
       screen.classList.remove('hidden');
-
       screen.classList.add('flex');
-
-
       screen.scrollIntoView({
         behavior: 'smooth'
       });
-
     }
-
-
     function closeGame() {
-
       stopGame();
-
-
       const screen =
         document.getElementById('gameScreen');
-
-
       screen.classList.add('hidden');
-
       screen.classList.remove('flex');
-
-
       currentActiveGame = null;
-
     }
-
-
     function toggleFullscreen() {
-
       const container =
         document.getElementById('iframeContainer');
-
-
       if (!document.fullscreenElement) {
-
         container
           .requestFullscreen()
           .catch(err =>
             console.error(err)
           );
-
       }
-
       else {
-
         document.exitFullscreen();
-
       }
-
     }
-
   </script>
-
 </body>
 </html>
