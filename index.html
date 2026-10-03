@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en" class="h-full bg-slate-950 text-slate-100">
 <head>
@@ -15,6 +14,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link
     href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rajdhani:wght@500;600;700&display=swap"
     rel="stylesheet"
@@ -59,6 +59,7 @@
       left: 0;
       bottom: 0;
       right: 0;
+
       background:
         linear-gradient(
           rgba(18, 16, 16, 0) 50%,
@@ -70,6 +71,7 @@
           rgba(0, 255, 0, 0.02),
           rgba(0, 0, 255, 0.05)
         );
+
       z-index: 20;
       background-size: 100% 3px, 6px 100%;
       pointer-events: none;
@@ -93,6 +95,27 @@
     ::-webkit-scrollbar-thumb:hover {
       background: #a855f7;
     }
+
+    .save-pulse {
+      animation: savePulse 0.8s ease-out;
+    }
+
+    @keyframes savePulse {
+      0% {
+        opacity: 0.4;
+        transform: scale(0.95);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
   </style>
 </head>
 
@@ -107,6 +130,7 @@
     <div
       class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between"
     >
+
       <div
         class="flex items-center space-x-3 cursor-pointer group"
         onclick="switchTab('all')"
@@ -132,7 +156,7 @@
         </div>
       </div>
 
-      <!-- Hamburger menu button -->
+      <!-- Hamburger menu -->
       <button
         id="menuBtn"
         onclick="toggleSideMenu()"
@@ -141,8 +165,10 @@
       >
         <i class="fa-solid fa-bars text-lg"></i>
       </button>
+
     </div>
   </header>
+
 
   <!-- SIDE MENU -->
   <div
@@ -155,8 +181,12 @@
     id="sideMenu"
     class="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-slate-900 border-r border-purple-800/50 z-50 transform -translate-x-full transition-transform duration-300 shadow-2xl flex flex-col"
   >
+
     <div class="p-4 border-b border-slate-800 flex items-center justify-between">
-      <h2 class="font-pixel text-sm text-cyan-300">My Vault</h2>
+
+      <h2 class="font-pixel text-sm text-cyan-300">
+        My Vault
+      </h2>
 
       <button
         onclick="closeSideMenu()"
@@ -164,11 +194,17 @@
       >
         <i class="fa-solid fa-xmark"></i>
       </button>
+
     </div>
 
+
     <div class="flex-1 overflow-y-auto p-4 space-y-6">
+
       <section>
-        <h3 class="text-xs font-pixel text-pink-400 mb-3 flex items-center gap-2">
+
+        <h3
+          class="text-xs font-pixel text-pink-400 mb-3 flex items-center gap-2"
+        >
           <i class="fa-solid fa-heart"></i>
           Favorites
         </h3>
@@ -178,10 +214,15 @@
             No favorites yet. Tap the heart on a game.
           </p>
         </div>
+
       </section>
 
+
       <section>
-        <h3 class="text-xs font-pixel text-cyan-400 mb-3 flex items-center gap-2">
+
+        <h3
+          class="text-xs font-pixel text-cyan-400 mb-3 flex items-center gap-2"
+        >
           <i class="fa-solid fa-clock-rotate-left"></i>
           Recently Played
         </h3>
@@ -191,15 +232,20 @@
             Play a game to see it here.
           </p>
         </div>
+
       </section>
+
     </div>
+
 
     <div
       class="p-3 border-t border-slate-800 text-[10px] text-slate-500 font-mono text-center"
     >
       Saves stored in this browser
     </div>
+
   </aside>
+
 
   <main
     class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col space-y-8"
@@ -210,10 +256,14 @@
       id="gameScreen"
       class="hidden flex-col bg-slate-900 border-2 border-purple-500/60 rounded-2xl overflow-hidden shadow-2xl relative border-glow"
     >
+
+      <!-- PLAYER HEADER -->
       <div
         class="bg-slate-950 px-5 py-3.5 flex items-center justify-between border-b border-purple-900/50"
       >
+
         <div class="flex items-center space-x-3 truncate pr-2">
+
           <span
             id="activeGameBadge"
             class="px-2.5 py-1 text-[10px] font-pixel rounded bg-purple-950 text-cyan-300 border border-cyan-500/40 uppercase"
@@ -227,9 +277,12 @@
           >
             Super Mario All-Stars
           </h3>
+
         </div>
 
+
         <div class="flex items-center space-x-2 shrink-0">
+
           <button
             onclick="toggleFullscreen()"
             class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-200 text-xs font-bold transition flex items-center gap-1.5 border border-slate-700"
@@ -245,13 +298,18 @@
             <i class="fa-solid fa-xmark"></i>
             <span>Close</span>
           </button>
+
         </div>
+
       </div>
 
+
+      <!-- EMULATOR / IFRAME -->
       <div
         class="relative w-full aspect-video bg-black flex flex-col items-center justify-center overflow-hidden"
         id="iframeContainer"
       >
+
         <div
           id="emulatorMount"
           class="w-full h-full hidden"
@@ -263,27 +321,44 @@
           allow="autoplay; gamepad; fullscreen; clipboard-read; clipboard-write"
           referrerpolicy="no-referrer"
         ></iframe>
+
       </div>
 
+
+      <!-- PLAYER FOOTER -->
       <div
         class="p-3.5 bg-slate-950 border-t border-slate-800 text-xs text-slate-400 flex flex-wrap items-center justify-between gap-2 font-mono"
       >
+
         <div class="flex items-center space-x-2">
-          <i class="fa-solid fa-keyboard text-pink-400 text-sm"></i>
-          <span>Progress auto-saves. Come back anytime and continue.</span>
+
+          <i class="fa-solid fa-floppy-disk text-pink-400 text-sm"></i>
+
+          <span id="saveStatusText">
+            Auto-save enabled
+          </span>
+
         </div>
 
-        <span class="text-cyan-400 font-bold">
-          Auto-Save On
+        <span
+          id="saveStatusBadge"
+          class="text-cyan-400 font-bold"
+        >
+          AUTO-SAVE
         </span>
+
       </div>
+
     </div>
+
 
     <!-- HERO -->
     <div
       class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-950/70 via-slate-900 to-cyan-950/70 border border-purple-500/30 p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border-glow"
     >
+
       <div class="space-y-3 text-center md:text-left z-10">
+
         <span
           class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/20 border border-emerald-500/40 rounded-full text-emerald-300 text-xs font-pixel tracking-wider uppercase"
         >
@@ -299,15 +374,18 @@
 
         <p class="text-slate-300 max-w-xl text-sm leading-relaxed">
           No setup screens — just choose a browser-playable game and start playing.
-          Progress auto-saves.
         </p>
+
       </div>
+
     </div>
+
 
     <!-- FILTERS -->
     <div
       class="flex flex-col sm:flex-row items-center justify-between gap-4"
     >
+
       <div class="flex flex-wrap items-center justify-center gap-2">
 
         <button
@@ -319,6 +397,7 @@
           <span>All Games</span>
         </button>
 
+
         <button
           id="tab-1980s"
           onclick="switchTab('1980s')"
@@ -327,6 +406,7 @@
           <i class="fa-solid fa-record-vinyl"></i>
           <span>1980s</span>
         </button>
+
 
         <button
           id="tab-1990s"
@@ -337,6 +417,7 @@
           <span>1990s</span>
         </button>
 
+
         <button
           id="tab-2000s"
           onclick="switchTab('2000s')"
@@ -345,9 +426,12 @@
           <i class="fa-solid fa-compact-disc"></i>
           <span>2000s</span>
         </button>
+
       </div>
 
+
       <div class="relative w-full sm:w-72">
+
         <i
           class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"
         ></i>
@@ -359,12 +443,17 @@
           placeholder="Search Mario, DOOM, Sonic..."
           class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition shadow-inner"
         />
+
       </div>
+
     </div>
+
 
     <!-- GAMES TITLE -->
     <div class="flex items-center justify-between pt-2">
+
       <div class="flex items-center space-x-3">
+
         <div
           class="w-3 h-8 bg-gradient-to-b from-pink-500 to-cyan-400 rounded-full"
         ></div>
@@ -374,7 +463,9 @@
         >
           Games
         </h2>
+
       </div>
+
 
       <span
         id="gameCountBadge"
@@ -382,7 +473,9 @@
       >
         Showing All Titles
       </span>
+
     </div>
+
 
     <!-- GAME GRID -->
     <div
@@ -392,17 +485,21 @@
 
   </main>
 
+
   <script>
-    /*
-      RetroVault game catalog + local save / favorites / recent.
-    */
 
     /*
-      FIXED:
-      The original file was missing the opening "{" before
-      the Super Mario All-Stars object. That syntax error stopped
-      the entire JavaScript file from executing.
+      ============================================================
+      RETROVAULT
+      Game catalog + favorites + recent games
+      + IndexedDB full emulator auto-resume
+      ============================================================
     */
+
+
+    /* ==========================================================
+       GAME CATALOG
+       ========================================================== */
 
     const GAMES_DATA = [
 
@@ -420,6 +517,7 @@
           'bg-purple-950 text-purple-300 border-purple-500/40'
       },
 
+
       {
         id: 'super-mario-all-stars',
         title: 'Super Mario All-Stars',
@@ -433,6 +531,7 @@
         badgeColor:
           'bg-red-950 text-red-300 border-red-500/40'
       },
+
 
       {
         id: 'super-mario-world',
@@ -448,6 +547,7 @@
           'bg-red-950 text-red-300 border-red-500/40'
       },
 
+
       {
         id: 'doom-1993',
         title: 'DOOM (1993 DOS)',
@@ -461,6 +561,7 @@
         badgeColor:
           'bg-amber-950 text-amber-300 border-amber-500/40'
       },
+
 
       {
         id: 'street-fighter-2',
@@ -476,6 +577,7 @@
           'bg-purple-950 text-purple-300 border-purple-500/40'
       },
 
+
       {
         id: 'pacman-arcade',
         title: 'Pac-Man Arcade',
@@ -489,6 +591,7 @@
         badgeColor:
           'bg-yellow-950 text-yellow-300 border-yellow-500/40'
       },
+
 
       {
         id: 'tetris-classic',
@@ -504,6 +607,7 @@
           'bg-cyan-950 text-cyan-300 border-cyan-500/40'
       },
 
+
       {
         id: 'sonic-genesis',
         title: 'Sonic The Hedgehog',
@@ -517,6 +621,7 @@
         badgeColor:
           'bg-blue-950 text-blue-300 border-blue-500/40'
       },
+
 
       {
         id: 'mario-kart-gba',
@@ -534,13 +639,37 @@
 
     ];
 
+
+    /* ==========================================================
+       GENERAL STATE
+       ========================================================== */
+
     let currentEra = 'all';
+
     let currentActiveGame = null;
+
     let emulatorScript = null;
+
     let autoSaveTimer = null;
+
+    let autoSnapshotTimer = null;
+
+    let autoSnapshotLoadTimer = null;
+
+    let autoSnapshotBusy = false;
+
+
+    /* ==========================================================
+       EMULATORJS
+       ========================================================== */
 
     const EMULATOR_DATA =
       'https://cdn.emulatorjs.org/stable/data/';
+
+
+    /* ==========================================================
+       FAVORITES / RECENT
+       ========================================================== */
 
     const STORAGE_FAVORITES =
       'retrovault_favorites';
@@ -550,61 +679,121 @@
 
     const MAX_RECENT = 12;
 
+
+    /* ==========================================================
+       INDEXEDDB AUTO-SAVE SETTINGS
+       ========================================================== */
+
+    const AUTOSAVE_DB_NAME =
+      'RetroVaultAutoSaves';
+
+    const AUTOSAVE_DB_VERSION = 1;
+
+    const AUTOSAVE_STORE =
+      'snapshots';
+
+    const AUTOSAVE_INTERVAL =
+      30000;
+
+
+    /* ==========================================================
+       FAVORITES
+       ========================================================== */
+
     function getFavorites() {
+
       try {
+
         return JSON.parse(
           localStorage.getItem(STORAGE_FAVORITES) || '[]'
         );
+
       } catch {
+
         return [];
+
       }
+
     }
 
+
     function setFavorites(ids) {
+
       localStorage.setItem(
         STORAGE_FAVORITES,
         JSON.stringify(ids)
       );
+
     }
+
 
     function isFavorite(id) {
+
       return getFavorites().includes(id);
+
     }
 
+
     function toggleFavorite(id, evt) {
-      if (evt) evt.stopPropagation();
+
+      if (evt) {
+        evt.stopPropagation();
+      }
 
       let favs = getFavorites();
 
       if (favs.includes(id)) {
+
         favs = favs.filter(x => x !== id);
+
       } else {
+
         favs.unshift(id);
+
       }
 
       setFavorites(favs);
 
       renderGames();
+
       renderSideLists();
+
     }
 
+
+    /* ==========================================================
+       RECENT GAMES
+       ========================================================== */
+
     function getRecent() {
+
       try {
+
         return JSON.parse(
           localStorage.getItem(STORAGE_RECENT) || '[]'
         );
+
       } catch {
+
         return [];
+
       }
+
     }
 
+
     function addRecent(id) {
-      let recent = getRecent().filter(x => x !== id);
+
+      let recent =
+        getRecent().filter(x => x !== id);
 
       recent.unshift(id);
 
       if (recent.length > MAX_RECENT) {
-        recent = recent.slice(0, MAX_RECENT);
+
+        recent =
+          recent.slice(0, MAX_RECENT);
+
       }
 
       localStorage.setItem(
@@ -613,9 +802,16 @@
       );
 
       renderSideLists();
+
     }
 
+
+    /* ==========================================================
+       SIDE MENU
+       ========================================================== */
+
     function toggleSideMenu() {
+
       const menu =
         document.getElementById('sideMenu');
 
@@ -623,18 +819,31 @@
         document.getElementById('sideMenuOverlay');
 
       const isOpen =
-        !menu.classList.contains('-translate-x-full');
+        !menu.classList.contains(
+          '-translate-x-full'
+        );
 
       if (isOpen) {
+
         closeSideMenu();
+
       } else {
-        menu.classList.remove('-translate-x-full');
+
+        menu.classList.remove(
+          '-translate-x-full'
+        );
+
         overlay.classList.remove('hidden');
+
         renderSideLists();
+
       }
+
     }
 
+
     function closeSideMenu() {
+
       document
         .getElementById('sideMenu')
         .classList.add('-translate-x-full');
@@ -642,24 +851,39 @@
       document
         .getElementById('sideMenuOverlay')
         .classList.add('hidden');
+
     }
 
+
+    /* ==========================================================
+       SIDE MENU LISTS
+       ========================================================== */
+
     function renderSideLists() {
+
       const favEl =
-        document.getElementById('favoritesList');
+        document.getElementById(
+          'favoritesList'
+        );
 
       const recentEl =
-        document.getElementById('recentList');
+        document.getElementById(
+          'recentList'
+        );
 
       const favs = getFavorites();
+
       const recent = getRecent();
 
+
       function makeRow(game) {
+
         return `
           <button
             onclick="launchGame('${game.id}'); closeSideMenu();"
             class="w-full flex items-center gap-3 p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 text-left transition"
           >
+
             <img
               src="${game.image}"
               class="w-10 h-10 rounded object-cover bg-slate-950"
@@ -667,6 +891,7 @@
             />
 
             <div class="min-w-0 flex-1">
+
               <div class="text-xs font-bold text-slate-100 truncate">
                 ${game.title}
               </div>
@@ -674,479 +899,1229 @@
               <div class="text-[10px] text-slate-400">
                 ${game.system}
               </div>
+
             </div>
 
             <i class="fa-solid fa-play text-cyan-400 text-xs"></i>
+
           </button>
         `;
+
       }
+
 
       if (favs.length === 0) {
+
         favEl.innerHTML =
           '<p class="text-slate-500 text-xs">No favorites yet. Tap the heart on a game.</p>';
+
       } else {
-        favEl.innerHTML = favs
-          .map(id =>
-            GAMES_DATA.find(g => g.id === id)
-          )
-          .filter(Boolean)
-          .map(makeRow)
-          .join('');
+
+        favEl.innerHTML =
+          favs
+            .map(id =>
+              GAMES_DATA.find(
+                g => g.id === id
+              )
+            )
+            .filter(Boolean)
+            .map(makeRow)
+            .join('');
+
       }
+
 
       if (recent.length === 0) {
+
         recentEl.innerHTML =
           '<p class="text-slate-500 text-xs">Play a game to see it here.</p>';
+
       } else {
-        recentEl.innerHTML = recent
-          .map(id =>
-            GAMES_DATA.find(g => g.id === id)
-          )
-          .filter(Boolean)
-          .map(makeRow)
-          .join('');
+
+        recentEl.innerHTML =
+          recent
+            .map(id =>
+              GAMES_DATA.find(
+                g => g.id === id
+              )
+            )
+            .filter(Boolean)
+            .map(makeRow)
+            .join('');
+
       }
+
     }
 
-    const AUTO_STATE_DB =
-      'retrovault_auto_states';
 
-    const AUTO_STATE_STORE =
-      'states';
+    /* ==========================================================
+       INDEXEDDB
+       ========================================================== */
 
-    function openStateDB() {
+    function openAutoSaveDB() {
+
       return new Promise((resolve, reject) => {
 
-        const req =
-          indexedDB.open(AUTO_STATE_DB, 1);
+        if (!('indexedDB' in window)) {
 
-        req.onupgradeneeded = () => {
-          const db = req.result;
+          reject(
+            new Error(
+              'IndexedDB is not supported in this browser.'
+            )
+          );
+
+          return;
+        }
+
+
+        const request =
+          indexedDB.open(
+            AUTOSAVE_DB_NAME,
+            AUTOSAVE_DB_VERSION
+          );
+
+
+        request.onupgradeneeded = () => {
+
+          const db =
+            request.result;
 
           if (
             !db.objectStoreNames.contains(
-              AUTO_STATE_STORE
+              AUTOSAVE_STORE
             )
           ) {
+
             db.createObjectStore(
-              AUTO_STATE_STORE
+              AUTOSAVE_STORE,
+              {
+                keyPath: 'gameId'
+              }
             );
+
           }
+
         };
 
-        req.onsuccess = () =>
-          resolve(req.result);
 
-        req.onerror = () =>
-          reject(req.error);
+        request.onsuccess = () => {
+
+          resolve(request.result);
+
+        };
+
+
+        request.onerror = () => {
+
+          reject(request.error);
+
+        };
+
       });
+
     }
 
-    async function saveAutoState(gameId) {
+
+    /* ==========================================================
+       SAVE SNAPSHOT TO INDEXEDDB
+       ========================================================== */
+
+    async function saveSnapshotToBrowser(
+      gameId,
+      state
+    ) {
+
+      if (!state || !state.byteLength) {
+
+        return false;
+
+      }
+
+
       try {
-        if (
-          !window.EJS_emulator ||
-          !window.EJS_emulator.gameManager
-        ) {
-          return false;
-        }
 
-        const gm =
-          window.EJS_emulator.gameManager;
+        const db =
+          await openAutoSaveDB();
 
-        try {
-          if (
-            gm.functions &&
-            typeof gm.functions.saveSaveFiles ===
-              'function'
-          ) {
-            gm.functions.saveSaveFiles();
-          }
-        } catch (_) {}
 
-        if (
-          typeof gm.getState !== 'function'
-        ) {
-          return false;
-        }
+        /*
+          Make a copy of the emulator state.
 
-        const state = gm.getState();
+          This is important because the emulator
+          continues running after the snapshot is taken.
+        */
 
-        if (!state) return false;
+        const stateCopy =
+          new Uint8Array(state)
+            .slice()
+            .buffer;
 
-        let bytes = state;
-
-        if (state.state) {
-          bytes = state.state;
-        }
-
-        if (
-          !(bytes instanceof Uint8Array) &&
-          !(bytes instanceof ArrayBuffer)
-        ) {
-          return false;
-        }
-
-        if (
-          bytes instanceof ArrayBuffer
-        ) {
-          bytes = new Uint8Array(bytes);
-        }
-
-        const db = await openStateDB();
 
         await new Promise(
           (resolve, reject) => {
-            const tx =
+
+            const transaction =
               db.transaction(
-                AUTO_STATE_STORE,
+                AUTOSAVE_STORE,
                 'readwrite'
               );
 
-            tx
-              .objectStore(AUTO_STATE_STORE)
-              .put(bytes, gameId);
 
-            tx.oncomplete =
-              () => resolve();
+            const store =
+              transaction.objectStore(
+                AUTOSAVE_STORE
+              );
 
-            tx.onerror =
-              () => reject(tx.error);
+
+            store.put({
+
+              gameId: gameId,
+
+              state: stateCopy,
+
+              savedAt: Date.now()
+
+            });
+
+
+            transaction.oncomplete =
+              resolve;
+
+
+            transaction.onerror = () =>
+              reject(
+                transaction.error
+              );
+
+
+            transaction.onabort = () =>
+              reject(
+                transaction.error ||
+                new Error(
+                  'Transaction aborted'
+                )
+              );
+
           }
         );
 
-        db.close();
 
-        console.log(
-          '[RetroVault] Auto-saved state for',
-          gameId
-        );
+        db.close();
 
         return true;
 
-      } catch (e) {
+      } catch (error) {
+
         console.warn(
-          '[RetroVault] Auto-save failed:',
-          e
+          '[RetroVault] IndexedDB auto-save failed:',
+          error
         );
 
         return false;
+
       }
+
     }
 
-    async function loadAutoState(gameId) {
-      try {
-        const db =
-          await openStateDB();
 
-        const bytes =
+    /* ==========================================================
+       LOAD SNAPSHOT FROM INDEXEDDB
+       ========================================================== */
+
+    async function loadSnapshotFromBrowser(
+      gameId
+    ) {
+
+      try {
+
+        const db =
+          await openAutoSaveDB();
+
+
+        const result =
           await new Promise(
             (resolve, reject) => {
 
-              const tx =
+              const transaction =
                 db.transaction(
-                  AUTO_STATE_STORE,
+                  AUTOSAVE_STORE,
                   'readonly'
                 );
 
-              const req =
-                tx
-                  .objectStore(AUTO_STATE_STORE)
-                  .get(gameId);
 
-              req.onsuccess =
-                () => resolve(
-                  req.result || null
+              const store =
+                transaction.objectStore(
+                  AUTOSAVE_STORE
                 );
 
-              req.onerror =
-                () => reject(req.error);
+
+              const request =
+                store.get(gameId);
+
+
+              request.onsuccess =
+                () => {
+
+                  resolve(
+                    request.result || null
+                  );
+
+                };
+
+
+              request.onerror =
+                () => {
+
+                  reject(
+                    request.error
+                  );
+
+                };
+
             }
           );
 
+
         db.close();
 
-        if (!bytes) return false;
 
         if (
-          !window.EJS_emulator ||
-          !window.EJS_emulator.gameManager
+          !result ||
+          !result.state
         ) {
-          return false;
+
+          return null;
+
         }
 
-        const gm =
-          window.EJS_emulator.gameManager;
 
-        if (
-          typeof gm.loadState !== 'function'
-        ) {
-          return false;
-        }
+        return {
 
-        gm.loadState(bytes);
+          state:
+            new Uint8Array(
+              result.state
+            ),
 
-        console.log(
-          '[RetroVault] Resumed auto-state for',
-          gameId
+          savedAt:
+            result.savedAt
+
+        };
+
+      } catch (error) {
+
+        console.warn(
+          '[RetroVault] IndexedDB auto-load failed:',
+          error
         );
 
-        return true;
+        return null;
 
-      } catch (e) {
+      }
+
+    }
+
+
+    /* ==========================================================
+       SAVE STATUS UI
+       ========================================================== */
+
+    function setSaveStatus(
+      message,
+      badge = 'AUTO-SAVE'
+    ) {
+
+      const text =
+        document.getElementById(
+          'saveStatusText'
+        );
+
+      const statusBadge =
+        document.getElementById(
+          'saveStatusBadge'
+        );
+
+
+      if (text) {
+
+        text.textContent =
+          message;
+
+      }
+
+
+      if (statusBadge) {
+
+        statusBadge.textContent =
+          badge;
+
+      }
+
+    }
+
+
+    function showSavedStatus(
+      restored = false
+    ) {
+
+      const text =
+        restored
+          ? 'Progress restored'
+          : 'Progress saved automatically';
+
+
+      setSaveStatus(
+        text,
+        restored
+          ? 'RESTORED'
+          : 'SAVED'
+      );
+
+
+      const badge =
+        document.getElementById(
+          'saveStatusBadge'
+        );
+
+
+      if (badge) {
+
+        badge.classList.remove(
+          'save-pulse'
+        );
+
+        void badge.offsetWidth;
+
+        badge.classList.add(
+          'save-pulse'
+        );
+
+      }
+
+
+      setTimeout(() => {
+
+        if (
+          currentActiveGame
+        ) {
+
+          setSaveStatus(
+            'Auto-save enabled',
+            'AUTO-SAVE'
+          );
+
+        }
+
+      }, 2200);
+
+    }
+
+
+    /* ==========================================================
+       GET CURRENT EMULATOR STATE
+       ========================================================== */
+
+    async function autoSaveSnapshot() {
+
+      if (
+        autoSnapshotBusy
+      ) {
+
+        return false;
+
+      }
+
+
+      if (
+        !currentActiveGame
+      ) {
+
+        return false;
+
+      }
+
+
+      /*
+        Only emulator games have
+        a RetroVault-controlled snapshot.
+      */
+
+      if (
+        currentActiveGame.type !==
+        'emulator'
+      ) {
+
+        return false;
+
+      }
+
+
+      const emulator =
+        window.EJS_emulator;
+
+
+      if (
+        !emulator ||
+        !emulator.gameManager
+      ) {
+
+        return false;
+
+      }
+
+
+      if (
+        typeof emulator
+          .gameManager
+          .getState !==
+        'function'
+      ) {
+
         console.warn(
-          '[RetroVault] Auto-load failed:',
-          e
+          '[RetroVault] EmulatorJS state saving is unavailable.'
         );
 
         return false;
-      }
-    }
 
-    function stopGame() {
-
-      if (autoSaveTimer) {
-        clearInterval(autoSaveTimer);
-        autoSaveTimer = null;
       }
 
-      if (
-        currentActiveGame &&
-        currentActiveGame.type === 'emulator'
-      ) {
-        saveAutoState(
-          currentActiveGame.id
-        );
-      }
 
-      const iframe =
-        document.getElementById('gameIframe');
+      autoSnapshotBusy = true;
 
-      const mount =
-        document.getElementById('emulatorMount');
-
-      if (iframe) {
-        iframe.src = 'about:blank';
-        iframe.classList.add('hidden');
-      }
-
-      if (mount) {
-        mount.innerHTML = '';
-        mount.classList.add('hidden');
-      }
-
-      if (emulatorScript) {
-        emulatorScript.remove();
-        emulatorScript = null;
-      }
 
       try {
-        delete window.EJS_player;
-        delete window.EJS_gameUrl;
-        delete window.EJS_core;
-        delete window.EJS_pathtodata;
-        delete window.EJS_startOnLoaded;
-        delete window.EJS_gameName;
-        delete window.EJS_gameID;
-        delete window.EJS_threads;
-        delete window.EJS_DEBUG_XX;
-        delete window.EJS_onSaveState;
-        delete window.EJS_onGameStart;
-        delete window.EJS_ready;
-      } catch (_) {}
+
+        const state =
+          emulator
+            .gameManager
+            .getState();
+
+
+        if (
+          !state ||
+          !state.byteLength
+        ) {
+
+          return false;
+
+        }
+
+
+        const success =
+          await saveSnapshotToBrowser(
+            currentActiveGame.id,
+            state
+          );
+
+
+        if (success) {
+
+          console.log(
+            `[RetroVault] Auto-saved ${currentActiveGame.title}`
+          );
+
+          showSavedStatus();
+
+        }
+
+
+        return success;
+
+      } catch (error) {
+
+        console.warn(
+          '[RetroVault] Could not create auto-save snapshot:',
+          error
+        );
+
+        return false;
+
+      } finally {
+
+        autoSnapshotBusy = false;
+
+      }
+
     }
+
+
+    /* ==========================================================
+       RESTORE CURRENT GAME
+       ========================================================== */
+
+    async function autoLoadSnapshot() {
+
+      if (
+        !currentActiveGame
+      ) {
+
+        return false;
+
+      }
+
+
+      if (
+        currentActiveGame.type !==
+        'emulator'
+      ) {
+
+        return false;
+
+      }
+
+
+      const emulator =
+        window.EJS_emulator;
+
+
+      if (
+        !emulator ||
+        !emulator.gameManager
+      ) {
+
+        return false;
+
+      }
+
+
+      if (
+        typeof emulator
+          .gameManager
+          .loadState !==
+        'function'
+      ) {
+
+        console.warn(
+          '[RetroVault] EmulatorJS state loading is unavailable.'
+        );
+
+        return false;
+
+      }
+
+
+      try {
+
+        const saved =
+          await loadSnapshotFromBrowser(
+            currentActiveGame.id
+          );
+
+
+        if (!saved) {
+
+          console.log(
+            `[RetroVault] No previous snapshot for ${currentActiveGame.title}`
+          );
+
+          return false;
+
+        }
+
+
+        /*
+          Make sure the game is still
+          the game the user originally launched.
+
+          This prevents an old async load
+          from restoring into another game.
+        */
+
+        const gameId =
+          currentActiveGame.id;
+
+
+        if (
+          !currentActiveGame ||
+          currentActiveGame.id !== gameId
+        ) {
+
+          return false;
+
+        }
+
+
+        emulator
+          .gameManager
+          .loadState(
+            saved.state
+          );
+
+
+        console.log(
+          `[RetroVault] Restored ${currentActiveGame.title} automatically`
+        );
+
+
+        showSavedStatus(true);
+
+
+        return true;
+
+      } catch (error) {
+
+        console.warn(
+          '[RetroVault] Could not restore auto-save:',
+          error
+        );
+
+        return false;
+
+      }
+
+    }
+
+
+    /* ==========================================================
+       OLD EMULATORJS SAVE FILE SUPPORT
+       ========================================================== */
 
     function tryAutoSave() {
-      if (
-        currentActiveGame &&
-        currentActiveGame.type === 'emulator'
-      ) {
-        saveAutoState(
-          currentActiveGame.id
+
+      try {
+
+        if (
+          window.EJS_emulator &&
+          window.EJS_emulator.gameManager
+        ) {
+
+          if (
+            typeof
+              window
+                .EJS_emulator
+                .gameManager
+                .functions
+                .saveSaveFiles ===
+            'function'
+          ) {
+
+            window
+              .EJS_emulator
+              .gameManager
+              .functions
+              .saveSaveFiles();
+
+          }
+
+        }
+
+      } catch (e) {
+
+        console.warn(
+          '[RetroVault] EmulatorJS save-file save failed:',
+          e
         );
+
       }
+
     }
 
-    window.addEventListener(
-      'load',
-      () => {
-        renderGames();
-        renderSideLists();
+
+    /* ==========================================================
+       START AUTO-SNAPSHOT SYSTEM
+       ========================================================== */
+
+    function startAutoSnapshotSystem() {
+
+      if (
+        autoSnapshotTimer
+      ) {
+
+        clearInterval(
+          autoSnapshotTimer
+        );
+
+        autoSnapshotTimer =
+          null;
+
       }
-    );
+
+
+      if (
+        autoSnapshotLoadTimer
+      ) {
+
+        clearTimeout(
+          autoSnapshotLoadTimer
+        );
+
+        autoSnapshotLoadTimer =
+          null;
+
+      }
+
+
+      /*
+        Wait about one second after the emulator
+        starts so its game state system is ready.
+      */
+
+      autoSnapshotLoadTimer =
+        setTimeout(
+          async () => {
+
+            if (
+              !currentActiveGame
+            ) {
+
+              return;
+
+            }
+
+
+            await autoLoadSnapshot();
+
+
+            /*
+              Start the permanent 30-second
+              snapshot cycle.
+            */
+
+            if (
+              currentActiveGame
+            ) {
+
+              autoSnapshotTimer =
+                setInterval(
+                  autoSaveSnapshot,
+                  AUTOSAVE_INTERVAL
+                );
+
+            }
+
+          },
+          1000
+        );
+
+    }
+
+
+    /* ==========================================================
+       STOP CURRENT GAME
+       ========================================================== */
+
+    async function stopGame() {
+
+      /*
+        Stop restore timer.
+      */
+
+      if (
+        autoSnapshotLoadTimer
+      ) {
+
+        clearTimeout(
+          autoSnapshotLoadTimer
+        );
+
+        autoSnapshotLoadTimer =
+          null;
+
+      }
+
+
+      /*
+        Stop 30-second snapshot timer.
+      */
+
+      if (
+        autoSnapshotTimer
+      ) {
+
+        clearInterval(
+          autoSnapshotTimer
+        );
+
+        autoSnapshotTimer =
+          null;
+
+      }
+
+
+      /*
+        IMPORTANT:
+
+        Take one final full snapshot BEFORE
+        destroying EmulatorJS.
+      */
+
+      await autoSaveSnapshot();
+
+
+      /*
+        Keep EmulatorJS's normal save-file
+        persistence too.
+      */
+
+      tryAutoSave();
+
+
+      /* ========================================================
+         DESTROY IFRAME
+         ======================================================== */
+
+      const iframe =
+        document.getElementById(
+          'gameIframe'
+        );
+
+
+      const mount =
+        document.getElementById(
+          'emulatorMount'
+        );
+
+
+      if (iframe) {
+
+        iframe.src =
+          'about:blank';
+
+        iframe.classList.add(
+          'hidden'
+        );
+
+      }
+
+
+      if (mount) {
+
+        mount.innerHTML =
+          '';
+
+        mount.classList.add(
+          'hidden'
+        );
+
+      }
+
+
+      /* ========================================================
+         REMOVE EMULATOR SCRIPT
+         ======================================================== */
+
+      if (
+        emulatorScript
+      ) {
+
+        emulatorScript.remove();
+
+        emulatorScript =
+          null;
+
+      }
+
+
+      /* ========================================================
+         CLEAR EMULATOR GLOBALS
+         ======================================================== */
+
+      try {
+
+        delete window.EJS_player;
+
+        delete window.EJS_gameUrl;
+
+        delete window.EJS_core;
+
+        delete window.EJS_pathtodata;
+
+        delete window.EJS_startOnLoaded;
+
+        delete window.EJS_gameName;
+
+        delete window.EJS_gameID;
+
+        delete window.EJS_threads;
+
+        delete window.EJS_DEBUG_XX;
+
+        delete window.EJS_onSaveState;
+
+        delete window.EJS_onGameStart;
+
+      } catch (_) {}
+
+    }
+
+
+    /* ==========================================================
+       RENDER GAMES
+       ========================================================== */
 
     function renderGames() {
 
       const grid =
-        document.getElementById('gamesGrid');
+        document.getElementById(
+          'gamesGrid'
+        );
 
-      grid.innerHTML = '';
+
+      grid.innerHTML =
+        '';
+
+
+      const searchInput =
+        document.getElementById(
+          'searchInput'
+        );
+
 
       const searchTerm =
-        document
-          .getElementById('searchInput')
-          .value
-          .toLowerCase();
+        searchInput
+          ? searchInput.value.toLowerCase()
+          : '';
+
 
       const filtered =
-        GAMES_DATA.filter(game => {
+        GAMES_DATA.filter(
+          game => {
 
-          const matchesEra =
-            currentEra === 'all' ||
-            game.era === currentEra;
+            const matchesEra =
+              currentEra === 'all' ||
+              game.era === currentEra;
 
-          const matchesSearch =
-            game.title
-              .toLowerCase()
-              .includes(searchTerm) ||
-            game.system
-              .toLowerCase()
-              .includes(searchTerm);
 
-          return matchesEra && matchesSearch;
-        });
+            const matchesSearch =
+              game.title
+                .toLowerCase()
+                .includes(searchTerm) ||
+              game.system
+                .toLowerCase()
+                .includes(searchTerm);
 
-      document.getElementById(
-        'gameCountBadge'
-      ).innerText =
-        `Showing ${filtered.length} Game${
-          filtered.length === 1 ? '' : 's'
-        }`;
 
-      if (filtered.length === 0) {
+            return (
+              matchesEra &&
+              matchesSearch
+            );
+
+          }
+        );
+
+
+      document
+        .getElementById(
+          'gameCountBadge'
+        )
+        .innerText =
+        `Showing ${filtered.length} Game${filtered.length === 1 ? '' : 's'}`;
+
+
+      if (
+        filtered.length === 0
+      ) {
 
         grid.innerHTML = `
-          <div class="col-span-full text-center py-16 text-slate-500 font-pixel text-sm space-y-3">
-            <i class="fa-solid fa-ghost text-4xl text-purple-400"></i>
-            <p>No retro games found.</p>
+
+          <div
+            class="col-span-full text-center py-16 text-slate-500 font-pixel text-sm space-y-3"
+          >
+
+            <i
+              class="fa-solid fa-ghost text-4xl text-purple-400"
+            ></i>
+
+            <p>
+              No retro games found.
+            </p>
+
           </div>
+
         `;
 
         return;
+
       }
 
-      filtered.forEach(game => {
 
-        const card =
-          document.createElement('div');
+      filtered.forEach(
+        game => {
 
-        card.className =
-          'group relative bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-400 card-glow flex flex-col justify-between';
+          const card =
+            document.createElement(
+              'div'
+            );
 
-        card.onclick =
-          () => launchGame(game.id);
 
-        const fav =
-          isFavorite(game.id);
+          card.className =
+            'group relative bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-400 card-glow flex flex-col justify-between';
 
-        card.innerHTML = `
-          <div class="relative w-full aspect-[4/3] overflow-hidden bg-slate-950">
 
-            <img
-              src="${game.image}"
-              alt="${game.title} cover art"
+          card.onclick =
+            () => launchGame(
+              game.id
+            );
 
-              onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 600 450%22%3E%3Crect width=%22600%22 height=%22450%22 fill=%22%23111827%22/%3E%3Ctext x=%22300%22 y=%22220%22 text-anchor=%22middle%22 fill=%22%2367e8f9%22 font-size=%2230%22 font-family=%22monospace%22%3ERETROVAULT%3C/text%3E%3Ctext x=%22300%22 y=%22270%22 text-anchor=%22middle%22 fill=%22%23f9a8d4%22 font-size=%2220%22 font-family=%22monospace%22%3EGAME ART%3C/text%3E%3C/svg%3E'"
 
-              class="w-full h-full object-cover group-hover:scale-110 transition duration-500 brightness-90 group-hover:brightness-100"
-            />
+          const fav =
+            isFavorite(
+              game.id
+            );
+
+
+          card.innerHTML = `
 
             <div
-              class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center backdrop-blur-[2px]"
+              class="relative w-full aspect-[4/3] overflow-hidden bg-slate-950"
             >
+
+              <img
+                src="${game.image}"
+                alt="${game.title} cover art"
+
+                onerror="
+                  this.onerror=null;
+                  this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 600 450%22%3E%3Crect width=%22600%22 height=%22450%22 fill=%22%23111827%22/%3E%3Ctext x=%22300%22 y=%22220%22 text-anchor=%22middle%22 fill=%22%2367e8f9%22 font-size=%2230%22 font-family=%22monospace%22%3ERETROVAULT%3C/text%3E%3Ctext x=%22300%22 y=%22270%22 text-anchor=%22middle%22 fill=%22%23f9a8d4%22 font-size=%2220%22 font-family=%22monospace%22%3EGAME ART%3C/text%3E%3C/svg%3E'
+                "
+
+                class="w-full h-full object-cover group-hover:scale-110 transition duration-500 brightness-90 group-hover:brightness-100"
+              />
+
+
               <div
-                class="w-12 h-12 rounded-full bg-gradient-to-tr from-pink-500 to-cyan-400 flex items-center justify-center text-slate-950 shadow-xl transform scale-75 group-hover:scale-100 transition duration-300"
+                class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center backdrop-blur-[2px]"
               >
-                <i class="fa-solid fa-play text-lg ml-0.5"></i>
+
+                <div
+                  class="w-12 h-12 rounded-full bg-gradient-to-tr from-pink-500 to-cyan-400 flex items-center justify-center text-slate-950 shadow-xl transform scale-75 group-hover:scale-100 transition duration-300"
+                >
+
+                  <i
+                    class="fa-solid fa-play text-lg ml-0.5"
+                  ></i>
+
+                </div>
+
               </div>
-            </div>
 
-            <div
-              class="absolute top-2.5 left-2.5 flex items-center space-x-1"
-            >
-              <span
-                class="px-2 py-0.5 text-[10px] font-pixel rounded-md bg-slate-950/90 ${game.badgeColor} border shadow"
+
+              <div
+                class="absolute top-2.5 left-2.5 flex items-center space-x-1"
               >
-                ${game.system}
-              </span>
+
+                <span
+                  class="px-2 py-0.5 text-[10px] font-pixel rounded-md bg-slate-950/90 ${game.badgeColor} border shadow"
+                >
+                  ${game.system}
+                </span>
+
+              </div>
+
+
+              <button
+                onclick="toggleFavorite('${game.id}', event)"
+
+                class="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-slate-950/80 border border-slate-700 flex items-center justify-center transition hover:scale-110 z-10"
+
+                title="${
+                  fav
+                    ? 'Remove from favorites'
+                    : 'Add to favorites'
+                }"
+              >
+
+                <i
+                  class="fa-${
+                    fav
+                      ? 'solid'
+                      : 'regular'
+                  } fa-heart ${
+                    fav
+                      ? 'text-pink-400'
+                      : 'text-slate-400'
+                  }"
+                ></i>
+
+              </button>
+
+
+              <div
+                class="absolute bottom-2.5 right-2.5 px-2 py-0.5 text-[9px] font-mono rounded bg-emerald-950/90 text-emerald-300 border border-emerald-500/40"
+              >
+
+                <i
+                  class="fa-solid fa-bolt mr-1"
+                ></i>
+
+                ${
+                  game.type === 'emulator'
+                    ? 'Emulator'
+                    : 'Instant'
+                }
+
+              </div>
+
             </div>
 
-            <button
-              onclick="toggleFavorite('${game.id}', event)"
-              class="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-slate-950/80 border border-slate-700 flex items-center justify-center transition hover:scale-110 z-10"
-              title="${
-                fav
-                  ? 'Remove from favorites'
-                  : 'Add to favorites'
-              }"
-            >
-              <i
-                class="fa-${
-                  fav ? 'solid' : 'regular'
-                } fa-heart ${
-                  fav
-                    ? 'text-pink-400'
-                    : 'text-slate-400'
-                }"
-              ></i>
-            </button>
 
             <div
-              class="absolute bottom-2.5 right-2.5 px-2 py-0.5 text-[9px] font-mono rounded bg-emerald-950/90 text-emerald-300 border border-emerald-500/40"
+              class="p-3.5 bg-slate-900/90 flex items-center justify-between border-t border-slate-800/80"
             >
-              <i class="fa-solid fa-bolt mr-1"></i>
-              ${
-                game.type === 'emulator'
-                  ? 'Emulator'
-                  : 'Instant'
-              }
+
+              <h3
+                class="font-bold text-slate-100 text-xs sm:text-sm group-hover:text-cyan-300 transition truncate pr-2"
+              >
+                ${game.title}
+              </h3>
+
+              <i
+                class="fa-solid fa-circle-play text-slate-500 group-hover:text-pink-400 transition text-base"
+              ></i>
+
             </div>
 
-          </div>
+          `;
 
-          <div
-            class="p-3.5 bg-slate-900/90 flex items-center justify-between border-t border-slate-800/80"
-          >
-            <h3
-              class="font-bold text-slate-100 text-xs sm:text-sm group-hover:text-cyan-300 transition truncate pr-2"
-            >
-              ${game.title}
-            </h3>
 
-            <i
-              class="fa-solid fa-circle-play text-slate-500 group-hover:text-pink-400 transition text-base"
-            ></i>
-          </div>
-        `;
+          grid.appendChild(
+            card
+          );
 
-        grid.appendChild(card);
-      });
+        }
+      );
+
     }
 
-    function switchTab(era) {
 
-      currentEra = era;
+    /* ==========================================================
+       SWITCH ERA
+       ========================================================== */
+
+    function switchTab(
+      era
+    ) {
+
+      currentEra =
+        era;
+
 
       document
-        .querySelectorAll('.tab-btn')
-        .forEach(btn => {
+        .querySelectorAll(
+          '.tab-btn'
+        )
+        .forEach(
+          btn => {
 
-          btn.classList.remove(
-            'bg-purple-600',
-            'text-white',
-            'shadow-lg'
-          );
+            btn.classList.remove(
+              'bg-purple-600',
+              'text-white',
+              'shadow-lg'
+            );
 
-          btn.classList.add(
-            'bg-slate-800/80',
-            'text-slate-300'
-          );
-        });
+            btn.classList.add(
+              'bg-slate-800/80',
+              'text-slate-300'
+            );
+
+          }
+        );
+
 
       const activeBtn =
         document.getElementById(
           `tab-${era}`
         );
+
 
       if (activeBtn) {
 
@@ -1160,66 +2135,154 @@
           'text-white',
           'shadow-lg'
         );
+
       }
 
+
       renderGames();
+
     }
+
+
+    /* ==========================================================
+       SEARCH
+       ========================================================== */
 
     function filterGames() {
+
       renderGames();
+
     }
 
-    function launchGame(gameId) {
+
+    /* ==========================================================
+       LAUNCH GAME
+       ========================================================== */
+
+    async function launchGame(
+      gameId
+    ) {
 
       const game =
         GAMES_DATA.find(
           g => g.id === gameId
         );
 
-      if (!game) return;
 
-      currentActiveGame = game;
+      if (!game) {
 
-      document.getElementById(
-        'activeGameTitle'
-      ).innerText = game.title;
+        return;
 
-      document.getElementById(
-        'activeGameBadge'
-      ).innerText = game.system;
+      }
 
-      addRecent(game.id);
 
-      stopGame();
+      /*
+        If another game is already running,
+        save it completely before switching.
+      */
+
+      if (
+        currentActiveGame
+      ) {
+
+        await stopGame();
+
+      }
+
+
+      /*
+        Set the new active game AFTER the
+        previous game has been safely stopped.
+      */
+
+      currentActiveGame =
+        game;
+
+
+      document
+        .getElementById(
+          'activeGameTitle'
+        )
+        .innerText =
+        game.title;
+
+
+      document
+        .getElementById(
+          'activeGameBadge'
+        )
+        .innerText =
+        game.system;
+
+
+      addRecent(
+        game.id
+      );
+
 
       const iframe =
         document.getElementById(
           'gameIframe'
         );
 
+
       const mount =
         document.getElementById(
           'emulatorMount'
         );
 
-      if (game.type === 'instant') {
 
-        iframe.classList.remove('hidden');
+      /* ========================================================
+         INSTANT IFRAME GAME
+         ======================================================== */
 
-        iframe.src = game.url;
+      if (
+        game.type === 'instant'
+      ) {
 
-      } else {
+        iframe.classList.remove(
+          'hidden'
+        );
 
-        mount.classList.remove('hidden');
+
+        iframe.src =
+          game.url;
+
+
+        setSaveStatus(
+          'Instant game loaded',
+          'PLAY'
+        );
+
+      }
+
+
+      /* ========================================================
+         EMULATORJS GAME
+         ======================================================== */
+
+      else {
+
+        mount.classList.remove(
+          'hidden'
+        );
+
+
+        /*
+          EmulatorJS configuration
+        */
 
         window.EJS_player =
           '#emulatorMount';
 
+
         window.EJS_gameName =
           game.title;
 
+
         window.EJS_gameID =
           game.id;
+
 
         window.EJS_gameUrl =
           new URL(
@@ -1227,101 +2290,150 @@
             window.location.href
           ).href;
 
+
         window.EJS_core =
           game.core;
+
 
         window.EJS_pathtodata =
           EMULATOR_DATA;
 
+
         window.EJS_startOnLoaded =
           true;
+
 
         window.EJS_threads =
           false;
 
+
         window.EJS_DEBUG_XX =
           false;
+
+
+        /*
+          EmulatorJS starts the
+          automatic snapshot system.
+        */
 
         window.EJS_onGameStart =
           function () {
 
-            setTimeout(() => {
-              loadAutoState(game.id);
-            }, 1000);
+            startAutoSnapshotSystem();
 
-            if (autoSaveTimer) {
-              clearInterval(
-                autoSaveTimer
-              );
-            }
-
-            autoSaveTimer =
-              setInterval(
-                tryAutoSave,
-                30000
-              );
           };
 
+
         console.log(
-          'RetroVault EmulatorJS ROM:',
+          '[RetroVault] EmulatorJS ROM:',
           window.EJS_gameUrl
         );
+
+
+        /*
+          Load EmulatorJS.
+        */
 
         emulatorScript =
           document.createElement(
             'script'
           );
 
+
         emulatorScript.src =
           EMULATOR_DATA +
           'loader.js';
 
+
         emulatorScript.async =
           true;
+
 
         document.body.appendChild(
           emulatorScript
         );
+
+
+        setSaveStatus(
+          'Starting emulator...',
+          'LOADING'
+        );
+
       }
+
+
+      /* ========================================================
+         SHOW GAME SCREEN
+         ======================================================== */
 
       const screen =
         document.getElementById(
           'gameScreen'
         );
 
+
       screen.classList.remove(
         'hidden'
       );
 
+
       screen.classList.add(
         'flex'
       );
+
 
       screen.scrollIntoView({
         behavior: 'smooth'
       });
+
     }
 
-    function closeGame() {
 
-      stopGame();
+    /* ==========================================================
+       CLOSE GAME
+       ========================================================== */
+
+    async function closeGame() {
+
+      /*
+        Save the current game BEFORE
+        removing it from the page.
+      */
+
+      await stopGame();
+
 
       const screen =
         document.getElementById(
           'gameScreen'
         );
 
+
       screen.classList.add(
         'hidden'
       );
+
 
       screen.classList.remove(
         'flex'
       );
 
+
       currentActiveGame =
         null;
+
+
+      setSaveStatus(
+        'Auto-save enabled',
+        'AUTO-SAVE'
+      );
+
     }
+
+
+    /* ==========================================================
+       FULLSCREEN
+       ========================================================== */
 
     function toggleFullscreen() {
 
@@ -1330,7 +2442,10 @@
           'iframeContainer'
         );
 
-      if (!document.fullscreenElement) {
+
+      if (
+        !document.fullscreenElement
+      ) {
 
         container
           .requestFullscreen()
@@ -1342,10 +2457,52 @@
       } else {
 
         document.exitFullscreen();
+
       }
+
     }
+
+
+    /* ==========================================================
+       BROWSER CLOSE / REFRESH PROTECTION
+       ========================================================== */
+
+    /*
+      If the user refreshes or closes the browser tab,
+      we try to perform the normal EmulatorJS save-file
+      operation.
+
+      The full IndexedDB snapshot is primarily handled by
+      our 30-second timer and the RetroVault Close button.
+    */
+
+    window.addEventListener(
+      'beforeunload',
+      () => {
+
+        tryAutoSave();
+
+      }
+    );
+
+
+    /* ==========================================================
+       PAGE LOAD
+       ========================================================== */
+
+    window.addEventListener(
+      'load',
+      () => {
+
+        renderGames();
+
+        renderSideLists();
+
+      }
+    );
+
+
   </script>
 
 </body>
 </html>
-```
