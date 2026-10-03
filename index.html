@@ -123,7 +123,6 @@
       </button>
     </div>
   </header>
-
   <!-- SIDE MENU (Favorites + Recently Played) -->
   <div
     id="sideMenuOverlay"
@@ -162,7 +161,6 @@
       Saves stored in this browser
     </div>
   </aside>
-
   <main
     class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col space-y-8"
   >
@@ -225,16 +223,11 @@
       >
         <div class="flex items-center space-x-2">
           <i class="fa-solid fa-keyboard text-pink-400 text-sm"></i>
-          <span>
-            Click a game below to play instantly in your browser.
-          </span>
+          <span>Progress auto-saves. Come back anytime and continue.</span>
         </div>
-        <span class="text-cyan-400 font-bold">
-          Instant Browser Play
-        </span>
+        <span class="text-cyan-400 font-bold">Auto-Save On</span>
       </div>
-    </div>
-    <!-- HERO -->
+    </div>    <!-- HERO -->
     <div
       class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-950/70 via-slate-900 to-cyan-950/70 border border-purple-500/30 p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border-glow"
     >
@@ -251,7 +244,7 @@
           Pick a game and start playing.
         </h2>
         <p class="text-slate-300 max-w-xl text-sm leading-relaxed">
-          No setup screens — just choose a browser-playable game and start playing.
+          No setup screens — just choose a browser-playable game and start playing. Progress auto-saves.
         </p>
       </div>
     </div>
@@ -330,7 +323,8 @@
       id="gamesGrid"
       class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"
     ></div>
-  </main>  <script>
+  </main>
+  <script>
     /*
       RetroVault game catalog + local save / favorites / recent.
     */
@@ -347,9 +341,7 @@
           'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 600 450%22%3E%3Crect width=%22600%22 height=%22450%22 fill=%22%230b1020%22/%3E%3Ctext x=%22300%22 y=%22195%22 text-anchor=%22middle%22 fill=%22%2367e8f9%22 font-size=%2242%22 font-family=%22monospace%22%3EGOTHICVANIA%3C/text%3E%3Ctext x=%22300%22 y=%22245%22 text-anchor=%22middle%22 fill=%22%23f9a8d4%22 font-size=%2222%22 font-family=%22monospace%22%3ESNES HOMEBREW%3C/text%3E%3C/svg%3E',
         badgeColor:
           'bg-purple-950 text-purple-300 border-purple-500/40'
-      },
-      {
-        id: 'super-mario-all-stars',
+      },        id: 'super-mario-all-stars',
         title: 'Super Mario All-Stars',
         system: 'SNES',
         era: '1990s',
@@ -502,9 +494,7 @@
       if (recent.length > MAX_RECENT) recent = recent.slice(0, MAX_RECENT);
       localStorage.setItem(STORAGE_RECENT, JSON.stringify(recent));
       renderSideLists();
-    }
-
-    function toggleSideMenu() {
+    }    function toggleSideMenu() {
       const menu = document.getElementById('sideMenu');
       const overlay = document.getElementById('sideMenuOverlay');
       const isOpen = !menu.classList.contains('-translate-x-full');
@@ -564,12 +554,84 @@
       }
     }
 
-    function stopGame() {
+    const AUTO_STATE_DB = 'retrovault_auto_states';
+    const AUTO_STATE_STORE = 'states';
+
+    function openStateDB() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(AUTO_STATE_DB, 1);
+        req.onupgradeneeded = () => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains(AUTO_STATE_STORE)) {
+            db.createObjectStore(AUTO_STATE_STORE);
+          }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function saveAutoState(gameId) {
+      try {
+        if (!window.EJS_emulator || !window.EJS_emulator.gameManager) return false;
+        const gm = window.EJS_emulator.gameManager;
+        try {
+          if (gm.functions && typeof gm.functions.saveSaveFiles === 'function') {
+            gm.functions.saveSaveFiles();
+          }
+        } catch (_) {}
+        if (typeof gm.getState !== 'function') return false;
+        const state = gm.getState();
+        if (!state) return false;
+        let bytes = state;
+        if (state.state) bytes = state.state;
+        if (!(bytes instanceof Uint8Array) && !(bytes instanceof ArrayBuffer)) return false;
+        if (bytes instanceof ArrayBuffer) bytes = new Uint8Array(bytes);
+        const db = await openStateDB();
+        await new Promise((resolve, reject) => {
+          const tx = db.transaction(AUTO_STATE_STORE, 'readwrite');
+          tx.objectStore(AUTO_STATE_STORE).put(bytes, gameId);
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+        });
+        db.close();
+        console.log('[RetroVault] Auto-saved state for', gameId);
+        return true;
+      } catch (e) {
+        console.warn('[RetroVault] Auto-save failed:', e);
+        return false;
+      }
+    }
+
+    async function loadAutoState(gameId) {
+      try {
+        const db = await openStateDB();
+        const bytes = await new Promise((resolve, reject) => {
+          const tx = db.transaction(AUTO_STATE_STORE, 'readonly');
+          const req = tx.objectStore(AUTO_STATE_STORE).get(gameId);
+          req.onsuccess = () => resolve(req.result || null);
+          req.onerror = () => reject(req.error);
+        });
+        db.close();
+        if (!bytes) return false;
+        if (!window.EJS_emulator || !window.EJS_emulator.gameManager) return false;
+        const gm = window.EJS_emulator.gameManager;
+        if (typeof gm.loadState !== 'function') return false;
+        gm.loadState(bytes);
+        console.log('[RetroVault] Resumed auto-state for', gameId);
+        return true;
+      } catch (e) {
+        console.warn('[RetroVault] Auto-load failed:', e);
+        return false;
+      }
+    }    function stopGame() {
       if (autoSaveTimer) {
         clearInterval(autoSaveTimer);
         autoSaveTimer = null;
       }
-      tryAutoSave();
+      if (currentActiveGame && currentActiveGame.type === 'emulator') {
+        saveAutoState(currentActiveGame.id);
+      }
 
       const iframe = document.getElementById('gameIframe');
       const mount = document.getElementById('emulatorMount');
@@ -597,17 +659,14 @@
         delete window.EJS_DEBUG_XX;
         delete window.EJS_onSaveState;
         delete window.EJS_onGameStart;
+        delete window.EJS_ready;
       } catch (_) {}
     }
 
     function tryAutoSave() {
-      try {
-        if (window.EJS_emulator && window.EJS_emulator.gameManager) {
-          if (typeof window.EJS_emulator.gameManager.functions.saveSaveFiles === 'function') {
-            window.EJS_emulator.gameManager.functions.saveSaveFiles();
-          }
-        }
-      } catch (e) {}
+      if (currentActiveGame && currentActiveGame.type === 'emulator') {
+        saveAutoState(currentActiveGame.id);
+      }
     }
 
     window.addEventListener('load', () => {
@@ -704,9 +763,7 @@
 
     function filterGames() {
       renderGames();
-    }
-
-    function launchGame(gameId) {
+    }    function launchGame(gameId) {
       const game = GAMES_DATA.find(g => g.id === gameId);
       if (!game) return;
 
@@ -738,8 +795,12 @@
         window.EJS_DEBUG_XX = false;
 
         window.EJS_onGameStart = function () {
+          setTimeout(() => {
+            loadAutoState(game.id);
+          }, 1000);
+
           if (autoSaveTimer) clearInterval(autoSaveTimer);
-          autoSaveTimer = setInterval(tryAutoSave, 60000);
+          autoSaveTimer = setInterval(tryAutoSave, 30000);
         };
 
         console.log('RetroVault EmulatorJS ROM:', window.EJS_gameUrl);
