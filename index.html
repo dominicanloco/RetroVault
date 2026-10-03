@@ -112,9 +112,57 @@
           </p>
         </div>
       </div>
-      <div></div>
+      <!-- Hamburger menu button -->
+      <button
+        id="menuBtn"
+        onclick="toggleSideMenu()"
+        class="w-10 h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-200 transition"
+        aria-label="Open menu"
+      >
+        <i class="fa-solid fa-bars text-lg"></i>
+      </button>
     </div>
   </header>
+
+  <!-- SIDE MENU (Favorites + Recently Played) -->
+  <div
+    id="sideMenuOverlay"
+    onclick="closeSideMenu()"
+    class="fixed inset-0 bg-black/60 z-40 hidden"
+  ></div>
+  <aside
+    id="sideMenu"
+    class="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-slate-900 border-r border-purple-800/50 z-50 transform -translate-x-full transition-transform duration-300 shadow-2xl flex flex-col"
+  >
+    <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+      <h2 class="font-pixel text-sm text-cyan-300">My Vault</h2>
+      <button onclick="closeSideMenu()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="flex-1 overflow-y-auto p-4 space-y-6">
+      <section>
+        <h3 class="text-xs font-pixel text-pink-400 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-heart"></i> Favorites
+        </h3>
+        <div id="favoritesList" class="space-y-2">
+          <p class="text-slate-500 text-xs">No favorites yet. Tap the heart on a game.</p>
+        </div>
+      </section>
+      <section>
+        <h3 class="text-xs font-pixel text-cyan-400 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-clock-rotate-left"></i> Recently Played
+        </h3>
+        <div id="recentList" class="space-y-2">
+          <p class="text-slate-500 text-xs">Play a game to see it here.</p>
+        </div>
+      </section>
+    </div>
+    <div class="p-3 border-t border-slate-800 text-[10px] text-slate-500 font-mono text-center">
+      Saves stored in this browser
+    </div>
+  </aside>
+
   <main
     class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col space-y-8"
   >
@@ -282,14 +330,9 @@
       id="gamesGrid"
       class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"
     ></div>
-  </main>
-  <script>
+  </main>  <script>
     /*
-      RetroVault game catalog.
-      Gothicvania is the test game.
-      It is stored at the ROOT of the GitHub Pages repository:
-          /RetroVault/gothicvania.sfc
-      The URL is generated automatically from the current GitHub Pages page.
+      RetroVault game catalog + local save / favorites / recent.
     */
     const GAMES_DATA = [
       {
@@ -299,12 +342,6 @@
         era: '1990s',
         type: 'emulator',
         core: 'snes',
-        /*
-          IMPORTANT:
-          This is intentionally relative to index.html.
-          GitHub Pages will resolve it to:
-          https://dominicanloco.github.io/RetroVault/gothicvania.sfc
-        */
         gameUrl: './gothicvania.sfc',
         image:
           'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 600 450%22%3E%3Crect width=%22600%22 height=%22450%22 fill=%22%230b1020%22/%3E%3Ctext x=%22300%22 y=%22195%22 text-anchor=%22middle%22 fill=%22%2367e8f9%22 font-size=%2242%22 font-family=%22monospace%22%3EGOTHICVANIA%3C/text%3E%3Ctext x=%22300%22 y=%22245%22 text-anchor=%22middle%22 fill=%22%23f9a8d4%22 font-size=%2222%22 font-family=%22monospace%22%3ESNES HOMEBREW%3C/text%3E%3C/svg%3E',
@@ -331,7 +368,7 @@
         era: '1990s',
         type: 'emulator',
         core: 'snes',
-        gameUrl: '/games/super-mario-world.sfc',
+        gameUrl: './super-mario-world.sfc',
         image:
           'https://commons.wikimedia.org/wiki/Special:FilePath/Super_Mario_World_SNES_cover.jpg',
         badgeColor:
@@ -416,16 +453,126 @@
           'bg-pink-950 text-pink-300 border-pink-500/40'
       }
     ];
+
     let currentEra = 'all';
     let currentActiveGame = null;
     let emulatorScript = null;
-    const EMULATOR_DATA =
-      'https://cdn.emulatorjs.org/stable/data/';
+    let autoSaveTimer = null;
+    const EMULATOR_DATA = 'https://cdn.emulatorjs.org/stable/data/';
+    const STORAGE_FAVORITES = 'retrovault_favorites';
+    const STORAGE_RECENT = 'retrovault_recent';
+    const MAX_RECENT = 12;
+
+    function getFavorites() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_FAVORITES) || '[]');
+      } catch {
+        return [];
+      }
+    }
+    function setFavorites(ids) {
+      localStorage.setItem(STORAGE_FAVORITES, JSON.stringify(ids));
+    }
+    function isFavorite(id) {
+      return getFavorites().includes(id);
+    }
+    function toggleFavorite(id, evt) {
+      if (evt) evt.stopPropagation();
+      let favs = getFavorites();
+      if (favs.includes(id)) {
+        favs = favs.filter(x => x !== id);
+      } else {
+        favs.unshift(id);
+      }
+      setFavorites(favs);
+      renderGames();
+      renderSideLists();
+    }
+
+    function getRecent() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_RECENT) || '[]');
+      } catch {
+        return [];
+      }
+    }
+    function addRecent(id) {
+      let recent = getRecent().filter(x => x !== id);
+      recent.unshift(id);
+      if (recent.length > MAX_RECENT) recent = recent.slice(0, MAX_RECENT);
+      localStorage.setItem(STORAGE_RECENT, JSON.stringify(recent));
+      renderSideLists();
+    }
+
+    function toggleSideMenu() {
+      const menu = document.getElementById('sideMenu');
+      const overlay = document.getElementById('sideMenuOverlay');
+      const isOpen = !menu.classList.contains('-translate-x-full');
+      if (isOpen) {
+        closeSideMenu();
+      } else {
+        menu.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+        renderSideLists();
+      }
+    }
+    function closeSideMenu() {
+      document.getElementById('sideMenu').classList.add('-translate-x-full');
+      document.getElementById('sideMenuOverlay').classList.add('hidden');
+    }
+
+    function renderSideLists() {
+      const favEl = document.getElementById('favoritesList');
+      const recentEl = document.getElementById('recentList');
+      const favs = getFavorites();
+      const recent = getRecent();
+
+      function makeRow(game) {
+        return `
+          <button
+            onclick="launchGame('${game.id}'); closeSideMenu();"
+            class="w-full flex items-center gap-3 p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 text-left transition"
+          >
+            <img src="${game.image}" class="w-10 h-10 rounded object-cover bg-slate-950" onerror="this.style.display='none'" />
+            <div class="min-w-0 flex-1">
+              <div class="text-xs font-bold text-slate-100 truncate">${game.title}</div>
+              <div class="text-[10px] text-slate-400">${game.system}</div>
+            </div>
+            <i class="fa-solid fa-play text-cyan-400 text-xs"></i>
+          </button>
+        `;
+      }
+
+      if (favs.length === 0) {
+        favEl.innerHTML = '<p class="text-slate-500 text-xs">No favorites yet. Tap the heart on a game.</p>';
+      } else {
+        favEl.innerHTML = favs
+          .map(id => GAMES_DATA.find(g => g.id === id))
+          .filter(Boolean)
+          .map(makeRow)
+          .join('');
+      }
+
+      if (recent.length === 0) {
+        recentEl.innerHTML = '<p class="text-slate-500 text-xs">Play a game to see it here.</p>';
+      } else {
+        recentEl.innerHTML = recent
+          .map(id => GAMES_DATA.find(g => g.id === id))
+          .filter(Boolean)
+          .map(makeRow)
+          .join('');
+      }
+    }
+
     function stopGame() {
-      const iframe =
-        document.getElementById('gameIframe');
-      const mount =
-        document.getElementById('emulatorMount');
+      if (autoSaveTimer) {
+        clearInterval(autoSaveTimer);
+        autoSaveTimer = null;
+      }
+      tryAutoSave();
+
+      const iframe = document.getElementById('gameIframe');
+      const mount = document.getElementById('emulatorMount');
       if (iframe) {
         iframe.src = 'about:blank';
         iframe.classList.add('hidden');
@@ -445,43 +592,44 @@
         delete window.EJS_pathtodata;
         delete window.EJS_startOnLoaded;
         delete window.EJS_gameName;
+        delete window.EJS_gameID;
         delete window.EJS_threads;
         delete window.EJS_DEBUG_XX;
+        delete window.EJS_onSaveState;
+        delete window.EJS_onGameStart;
       } catch (_) {}
     }
-    window.addEventListener(
-      'load',
-      renderGames
-    );
+
+    function tryAutoSave() {
+      try {
+        if (window.EJS_emulator && window.EJS_emulator.gameManager) {
+          if (typeof window.EJS_emulator.gameManager.functions.saveSaveFiles === 'function') {
+            window.EJS_emulator.gameManager.functions.saveSaveFiles();
+          }
+        }
+      } catch (e) {}
+    }
+
+    window.addEventListener('load', () => {
+      renderGames();
+      renderSideLists();
+    });
+
     function renderGames() {
-      const grid =
-        document.getElementById('gamesGrid');
+      const grid = document.getElementById('gamesGrid');
       grid.innerHTML = '';
-      const searchTerm =
-        document
-          .getElementById('searchInput')
-          .value
-          .toLowerCase();
-      const filtered =
-        GAMES_DATA.filter(game => {
-          const matchesEra =
-            currentEra === 'all' ||
-            game.era === currentEra;
-          const matchesSearch =
-            game.title
-              .toLowerCase()
-              .includes(searchTerm) ||
-            game.system
-              .toLowerCase()
-              .includes(searchTerm);
-          return matchesEra && matchesSearch;
-        });
-      document
-        .getElementById('gameCountBadge')
-        .innerText =
-          `Showing ${filtered.length} Game${
-            filtered.length === 1 ? '' : 's'
-          }`;
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = GAMES_DATA.filter(game => {
+        const matchesEra = currentEra === 'all' || game.era === currentEra;
+        const matchesSearch =
+          game.title.toLowerCase().includes(searchTerm) ||
+          game.system.toLowerCase().includes(searchTerm);
+        return matchesEra && matchesSearch;
+      });
+
+      document.getElementById('gameCountBadge').innerText =
+        `Showing ${filtered.length} Game${filtered.length === 1 ? '' : 's'}`;
+
       if (filtered.length === 0) {
         grid.innerHTML = `
           <div class="col-span-full text-center py-16 text-slate-500 font-pixel text-sm space-y-3">
@@ -491,200 +639,136 @@
         `;
         return;
       }
+
       filtered.forEach(game => {
-        const card =
-          document.createElement('div');
+        const card = document.createElement('div');
         card.className =
           'group relative bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-400 card-glow flex flex-col justify-between';
-        card.onclick =
-          () => launchGame(game.id);
+        card.onclick = () => launchGame(game.id);
+
+        const fav = isFavorite(game.id);
         card.innerHTML = `
-          <div
-            class="relative w-full aspect-[4/3] overflow-hidden bg-slate-950"
-          >
+          <div class="relative w-full aspect-[4/3] overflow-hidden bg-slate-950">
             <img
               src="${game.image}"
               alt="${game.title} cover art"
-              onerror="
-                this.onerror=null;
-                this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 600 450%22%3E%3Crect width=%22600%22 height=%22450%22 fill=%22%23111827%22/%3E%3Ctext x=%22300%22 y=%22220%22 text-anchor=%22middle%22 fill=%22%2367e8f9%22 font-size=%2230%22 font-family=%22monospace%22%3ERETROVAULT%3C/text%3E%3Ctext x=%22300%22 y=%22270%22 text-anchor=%22middle%22 fill=%22%23f9a8d4%22 font-size=%2220%22 font-family=%22monospace%22%3EGAME ART%3C/text%3E%3C/svg%3E'
-              "
+              onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 600 450%22%3E%3Crect width=%22600%22 height=%22450%22 fill=%22%23111827%22/%3E%3Ctext x=%22300%22 y=%22220%22 text-anchor=%22middle%22 fill=%22%2367e8f9%22 font-size=%2230%22 font-family=%22monospace%22%3ERETROVAULT%3C/text%3E%3Ctext x=%22300%22 y=%22270%22 text-anchor=%22middle%22 fill=%22%23f9a8d4%22 font-size=%2220%22 font-family=%22monospace%22%3EGAME ART%3C/text%3E%3C/svg%3E'"
               class="w-full h-full object-cover group-hover:scale-110 transition duration-500 brightness-90 group-hover:brightness-100"
             />
-            <div
-              class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center backdrop-blur-[2px]"
-            >
-              <div
-                class="w-12 h-12 rounded-full bg-gradient-to-tr from-pink-500 to-cyan-400 flex items-center justify-center text-slate-950 shadow-xl transform scale-75 group-hover:scale-100 transition duration-300"
-              >
+            <div class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center backdrop-blur-[2px]">
+              <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-pink-500 to-cyan-400 flex items-center justify-center text-slate-950 shadow-xl transform scale-75 group-hover:scale-100 transition duration-300">
                 <i class="fa-solid fa-play text-lg ml-0.5"></i>
               </div>
             </div>
-            <div
-              class="absolute top-2.5 left-2.5 flex items-center space-x-1"
-            >
-              <span
-                class="px-2 py-0.5 text-[10px] font-pixel rounded-md bg-slate-950/90 ${game.badgeColor} border shadow"
-              >
+            <div class="absolute top-2.5 left-2.5 flex items-center space-x-1">
+              <span class="px-2 py-0.5 text-[10px] font-pixel rounded-md bg-slate-950/90 ${game.badgeColor} border shadow">
                 ${game.system}
               </span>
             </div>
-            <div
-              class="absolute bottom-2.5 right-2.5 px-2 py-0.5 text-[9px] font-mono rounded bg-emerald-950/90 text-emerald-300 border border-emerald-500/40"
+            <button
+              onclick="toggleFavorite('${game.id}', event)"
+              class="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-slate-950/80 border border-slate-700 flex items-center justify-center transition hover:scale-110 z-10"
+              title="${fav ? 'Remove from favorites' : 'Add to favorites'}"
             >
+              <i class="fa-${fav ? 'solid' : 'regular'} fa-heart ${fav ? 'text-pink-400' : 'text-slate-400'}"></i>
+            </button>
+            <div class="absolute bottom-2.5 right-2.5 px-2 py-0.5 text-[9px] font-mono rounded bg-emerald-950/90 text-emerald-300 border border-emerald-500/40">
               <i class="fa-solid fa-bolt mr-1"></i>
               ${game.type === 'emulator' ? 'Emulator' : 'Instant'}
             </div>
           </div>
-          <div
-            class="p-3.5 bg-slate-900/90 flex items-center justify-between border-t border-slate-800/80"
-          >
-            <h3
-              class="font-bold text-slate-100 text-xs sm:text-sm group-hover:text-cyan-300 transition truncate pr-2"
-            >
+          <div class="p-3.5 bg-slate-900/90 flex items-center justify-between border-t border-slate-800/80">
+            <h3 class="font-bold text-slate-100 text-xs sm:text-sm group-hover:text-cyan-300 transition truncate pr-2">
               ${game.title}
             </h3>
-            <i
-              class="fa-solid fa-circle-play text-slate-500 group-hover:text-pink-400 transition text-base"
-            ></i>
+            <i class="fa-solid fa-circle-play text-slate-500 group-hover:text-pink-400 transition text-base"></i>
           </div>
         `;
         grid.appendChild(card);
       });
     }
+
     function switchTab(era) {
       currentEra = era;
-      document
-        .querySelectorAll('.tab-btn')
-        .forEach(btn => {
-          btn.classList.remove(
-            'bg-purple-600',
-            'text-white',
-            'shadow-lg'
-          );
-          btn.classList.add(
-            'bg-slate-800/80',
-            'text-slate-300'
-          );
-        });
-      const activeBtn =
-        document.getElementById(`tab-${era}`);
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-purple-600', 'text-white', 'shadow-lg');
+        btn.classList.add('bg-slate-800/80', 'text-slate-300');
+      });
+      const activeBtn = document.getElementById(`tab-${era}`);
       if (activeBtn) {
-        activeBtn.classList.remove(
-          'bg-slate-800/80',
-          'text-slate-300'
-        );
-        activeBtn.classList.add(
-          'bg-purple-600',
-          'text-white',
-          'shadow-lg'
-        );
+        activeBtn.classList.remove('bg-slate-800/80', 'text-slate-300');
+        activeBtn.classList.add('bg-purple-600', 'text-white', 'shadow-lg');
       }
       renderGames();
     }
+
     function filterGames() {
       renderGames();
     }
+
     function launchGame(gameId) {
-      const game =
-        GAMES_DATA.find(
-          g => g.id === gameId
-        );
+      const game = GAMES_DATA.find(g => g.id === gameId);
       if (!game) return;
+
       currentActiveGame = game;
-      document
-        .getElementById('activeGameTitle')
-        .innerText = game.title;
-      document
-        .getElementById('activeGameBadge')
-        .innerText = game.system;
+      document.getElementById('activeGameTitle').innerText = game.title;
+      document.getElementById('activeGameBadge').innerText = game.system;
+
+      addRecent(game.id);
+
       stopGame();
-      const iframe =
-        document.getElementById('gameIframe');
-      const mount =
-        document.getElementById('emulatorMount');
+
+      const iframe = document.getElementById('gameIframe');
+      const mount = document.getElementById('emulatorMount');
+
       if (game.type === 'instant') {
         iframe.classList.remove('hidden');
         iframe.src = game.url;
-      }
-      else {
+      } else {
         mount.classList.remove('hidden');
-        /*
-          EmulatorJS configuration
-        */
-        window.EJS_player =
-          '#emulatorMount';
-        window.EJS_gameName =
-          game.title;
-        /*
-          THIS IS THE IMPORTANT PART.
-          The ROM URL is resolved relative to the
-          GitHub Pages project URL.
-          Example:
-          https://dominicanloco.github.io/RetroVault/
-          +
-          gothicvania.sfc
-          becomes:
-          https://dominicanloco.github.io/RetroVault/gothicvania.sfc
-        */
-        window.EJS_gameUrl =
-          new URL(
-            game.gameUrl,
-            window.location.href
-          ).href;
-        window.EJS_core =
-          game.core;
-        window.EJS_pathtodata =
-          EMULATOR_DATA;
-        window.EJS_startOnLoaded =
-          true;
-        window.EJS_threads =
-          false;
-        window.EJS_DEBUG_XX =
-          false;
-        console.log(
-          'RetroVault EmulatorJS ROM:',
-          window.EJS_gameUrl
-        );
-        /*
-          Load EmulatorJS.
-        */
-        emulatorScript =
-          document.createElement('script');
-        emulatorScript.src =
-          EMULATOR_DATA + 'loader.js';
+
+        window.EJS_player = '#emulatorMount';
+        window.EJS_gameName = game.title;
+        window.EJS_gameID = game.id;
+        window.EJS_gameUrl = new URL(game.gameUrl, window.location.href).href;
+        window.EJS_core = game.core;
+        window.EJS_pathtodata = EMULATOR_DATA;
+        window.EJS_startOnLoaded = true;
+        window.EJS_threads = false;
+        window.EJS_DEBUG_XX = false;
+
+        window.EJS_onGameStart = function () {
+          if (autoSaveTimer) clearInterval(autoSaveTimer);
+          autoSaveTimer = setInterval(tryAutoSave, 60000);
+        };
+
+        console.log('RetroVault EmulatorJS ROM:', window.EJS_gameUrl);
+
+        emulatorScript = document.createElement('script');
+        emulatorScript.src = EMULATOR_DATA + 'loader.js';
         emulatorScript.async = true;
-        document.body.appendChild(
-          emulatorScript
-        );
+        document.body.appendChild(emulatorScript);
       }
-      const screen =
-        document.getElementById('gameScreen');
+
+      const screen = document.getElementById('gameScreen');
       screen.classList.remove('hidden');
       screen.classList.add('flex');
-      screen.scrollIntoView({
-        behavior: 'smooth'
-      });
+      screen.scrollIntoView({ behavior: 'smooth' });
     }
+
     function closeGame() {
       stopGame();
-      const screen =
-        document.getElementById('gameScreen');
+      const screen = document.getElementById('gameScreen');
       screen.classList.add('hidden');
       screen.classList.remove('flex');
       currentActiveGame = null;
     }
+
     function toggleFullscreen() {
-      const container =
-        document.getElementById('iframeContainer');
+      const container = document.getElementById('iframeContainer');
       if (!document.fullscreenElement) {
-        container
-          .requestFullscreen()
-          .catch(err =>
-            console.error(err)
-          );
-      }
-      else {
+        container.requestFullscreen().catch(err => console.error(err));
+      } else {
         document.exitFullscreen();
       }
     }
